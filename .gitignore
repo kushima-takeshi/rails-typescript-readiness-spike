@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# Rails（Phase 1 以降）
+backend/log/*
+backend/tmp/*
+backend/storage/*
+!backend/log/.keep
+!backend/tmp/.keep
+
+# Node（Phase 3 以降）
+frontend/node_modules/
+frontend/dist/
