@@ -19,17 +19,17 @@
 
 ---
 
-## Phase 1: Rails モデル層
+## Phase 1: Rails モデル層 ✅
 
 **目的:** Active Record の基本（model, migration, validation, association, enum）を確認する。
 
-| タスク | 確認ポイント |
+| タスク | 状態 |
 |---|---|
-| `rails new backend --api` でプロジェクト作成 | API モードの生成物の違い |
-| SkillGap / LearningTask の migration 作成 | Spring Boot の Flyway / Liquibase との違い |
-| Model 定義（validation, association, enum） | JPA Entity + Bean Validation との違い |
-| `rails db:migrate` / `db:seed` | schema.rb の自動生成 |
-| Model spec（RSpec） | バリデーション・関連のテストの書き方 |
+| `rails new backend --api` でプロジェクト作成 | 完了 |
+| SkillGap / LearningTask の migration 作成 | 完了 |
+| Model 定義（validation, association, enum） | 完了 |
+| `rails db:migrate` / `db:seed` | migrate 完了（seed は未使用） |
+| Model spec（RSpec） | 未着手 |
 
 **成果物:**
 
@@ -42,17 +42,17 @@
 
 ---
 
-## Phase 2: Rails API 層
+## Phase 2: Rails API 層 ✅
 
 **目的:** routing → controller → JSON レスポンスの流れを確認する。
 
-| タスク | 確認ポイント |
+| タスク | 状態 |
 |---|---|
-| `config/routes.rb` で RESTful ルーティング定義 | `@RequestMapping` / `@GetMapping` との違い |
-| `Api::V1::SkillGapsController` 実装 | Controller の薄さ / Service 層の有無 |
-| JSON シリアライズ（serializer or `render json:`） | DTO / Response クラスとの違い |
-| エラーハンドリング（422, 404） | `@ControllerAdvice` / `ExceptionHandler` との違い |
-| Request spec | API テストの書き方 |
+| `config/routes.rb` で RESTful ルーティング定義 | 完了 |
+| `Api::V1::SkillGapsController` 実装 | 完了 |
+| JSON シリアライズ（serializer or `render json:`） | 完了（`render json:` で Hash 化） |
+| エラーハンドリング（422, 404） | 完了（curl で確認） |
+| Request spec | 未着手 |
 
 **成果物:**
 

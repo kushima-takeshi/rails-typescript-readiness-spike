@@ -8,7 +8,7 @@
 
 | # | ファイル（予定） | 比較トピック | 対応する spike / Phase |
 |---|---|---|---|
-| 01 | `01-routing-and-controllers.md` | ルーティングとコントローラの責務 | Phase 2 |
+| 01 | `01-routing-and-controllers.md` | ルーティングとコントローラの責務 | Phase 2 ✅ |
 | 02 | `02-active-record-vs-jpa.md` | Active Record と JPA Entity の違い | Phase 1 |
 | 03 | `03-migrations.md` | migration と Flyway / Liquibase | Phase 1 |
 | 04 | `04-validations.md` | バリデーション（validates vs Bean Validation） | Phase 1 |

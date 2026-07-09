@@ -18,60 +18,60 @@ Rails / TypeScript / Java Spring Boot の概念対応を横断的にまとめる
 
 | トピック | Spring Boot | Rails（backend） | TypeScript（frontend） | 確認済み | メモ |
 |---|---|---|---|---|---|
-| プロジェクト生成 | Spring Initializr | `rails new --api` | `npm create vite` | ⬜ | |
-| ディレクトリ構成 | `src/main/java/...` | `app/`, `config/`, `db/` | `src/`, `public/` | ⬜ | |
-| 依存管理 | Maven / Gradle | Bundler（Gemfile） | npm（package.json） | ⬜ | |
-| 設定ファイル | `application.yml` | `config/*.rb` | `vite.config.ts` | ⬜ | |
+| プロジェクト生成 | Spring Initializr | `rails new --api` | `npm create vite` | ✅ | `rails new . --api -d postgresql` で backend/ に生成 |
+| ディレクトリ構成 | `src/main/java/...` | `app/`, `config/`, `db/` | `src/`, `public/` | ✅ | API モードは `app/views` 等が少ない |
+| 依存管理 | Maven / Gradle | Bundler（Gemfile） | npm（package.json） | ✅ | Gemfile + bundle install |
+| 設定ファイル | `application.yml` | `config/*.rb` | `vite.config.ts` | ✅ | `database.yml` で Postgres port 5433 |
 
 ## 2. ルーティング・コントローラ
 
 | トピック | Spring Boot | Rails（backend） | TypeScript（frontend） | 確認済み | メモ |
 |---|---|---|---|---|---|
-| ルート定義 | `@GetMapping` 等 | `config/routes.rb` | React Router | ⬜ | |
-| コントローラ | `@RestController` | `Api::V1::*Controller` | — | ⬜ | |
-| アクション分割 | メソッド単位 | アクション名（index, show, create...） | — | ⬜ | |
-| Service 層 | 一般的に分離 | 省略 or 薄い Model 委譲 | — | ⬜ | |
-| リクエストパラメータ | `@RequestBody`, `@PathVariable` | `params` | — | ⬜ | |
-| レスポンス | `ResponseEntity<T>` | `render json:` / serializer | — | ⬜ | |
+| ルート定義 | `@GetMapping` 等 | `config/routes.rb` | React Router | ✅ | `namespace :api/v1` + `resources` |
+| コントローラ | `@RestController` | `Api::V1::*Controller` | — | ✅ | `ActionController::API` 継承 |
+| アクション分割 | メソッド単位 | アクション名（index, show, create...） | — | ✅ | REST 規約どおりのメソッド名 |
+| Service 層 | 一般的に分離 | 省略 or 薄い Model 委譲 | — | ✅ | 本 spike では Service なし |
+| リクエストパラメータ | `@RequestBody`, `@PathVariable` | `params` | — | ✅ | Strong Parameters + `{"skill_gap":{...}}` ラップ |
+| レスポンス | `ResponseEntity<T>` | `render json:` / serializer | — | ✅ | Controller 内 private メソッドで Hash 化 |
 
 ## 3. モデル・永続化
 
 | トピック | Spring Boot | Rails（backend） | TypeScript（frontend） | 確認済み | メモ |
 |---|---|---|---|---|---|
-| ORM | JPA（Hibernate） | Active Record | — | ⬜ | |
-| エンティティ定義 | `@Entity` クラス | `ApplicationRecord` 継承 | — | ⬜ | |
-| Repository | `JpaRepository` インターフェース | 不要（Model に集約） | — | ⬜ | |
-| マイグレーション | Flyway / Liquibase | `db/migrate/` | — | ⬜ | |
-| スキーマ管理 | migration ツール | `db/schema.rb`（自動生成） | — | ⬜ | |
-| バリデーション | Bean Validation（`@NotNull` 等） | `validates` マクロ | — | ⬜ | |
-| 関連定義 | `@OneToMany`, `@ManyToOne` | `has_many`, `belongs_to` | — | ⬜ | |
-| カスケード削除 | `cascade`, `orphanRemoval` | `dependent: :destroy` | — | ⬜ | |
+| ORM | JPA（Hibernate） | Active Record | — | ✅ | Model が DB 操作まで担う |
+| エンティティ定義 | `@Entity` クラス | `ApplicationRecord` 継承 | — | ✅ | SkillGap / LearningTask |
+| Repository | `JpaRepository` インターフェース | 不要（Model に集約） | — | ✅ | `SkillGap.find` / `SkillGap.all` 等 |
+| マイグレーション | Flyway / Liquibase | `db/migrate/` | — | ✅ | `rails g model` で生成 |
+| スキーマ管理 | migration ツール | `db/schema.rb`（自動生成） | — | ✅ | migrate 後に自動更新 |
+| バリデーション | Bean Validation（`@NotNull` 等） | `validates` マクロ | — | ✅ | 422 で `errors` を JSON 返却 |
+| 関連定義 | `@OneToMany`, `@ManyToOne` | `has_many`, `belongs_to` | — | ✅ | ネストルートと対応 |
+| カスケード削除 | `cascade`, `orphanRemoval` | `dependent: :destroy` | — | ✅ | SkillGap 削除時に子も削除 |
 
 ## 4. 状態管理（enum / status）
 
 | トピック | Spring Boot | Rails（backend） | TypeScript（frontend） | 確認済み | メモ |
 |---|---|---|---|---|---|
-| enum 定義 | Java `enum` クラス | `enum` マクロ | union type | ⬜ | |
-| DB 格納 | ordinal / STRING | string / integer（設定次第） | — | ⬜ | |
-| バリデーション | enum 型で制約 | `enum` の inclusion | 型 + 表示マップ | ⬜ | |
-| 表示変換 | サーバー側で変換 | serializer or helper | フロントのマップオブジェクト | ⬜ | |
+| enum 定義 | Java `enum` クラス | `enum` マクロ | union type | ✅ | `not_started: 0` 形式 |
+| DB 格納 | ordinal / STRING | string / integer（設定次第） | — | ✅ | integer カラムに 0,1,2 |
+| バリデーション | enum 型で制約 | `enum` の inclusion | 型 + 表示マップ | ✅ | 不正値は AR が拒否 |
+| 表示変換 | サーバー側で変換 | serializer or helper | フロントのマップオブジェクト | ✅ | JSON では文字列（`"in_progress"`）で返る |
 
 ## 5. API 連携（フロントエンド）
 
 | トピック | Spring Boot | Rails（backend） | TypeScript（frontend） | 確認済み | メモ |
 |---|---|---|---|---|---|
-| HTTP クライアント | —（フロント側） | — | `fetch` / axios | ⬜ | |
-| 型定義 | DTO クラス | serializer の出力 | `interface` / `type` | ⬜ | |
-| エラーハンドリング | `@ControllerAdvice` | `rescue_from` / ステータスコード | try-catch + UI 表示 | ⬜ | |
-| CORS | `@CrossOrigin` | `rack-cors` | — | ⬜ | |
-| 開発時 proxy | — | — | Vite `server.proxy` | ⬜ | |
+| HTTP クライアント | —（フロント側） | — | `fetch` / axios | ⬜ | Phase 3 で確認予定 |
+| 型定義 | DTO クラス | serializer の出力 | `interface` / `type` | ⬜ | Phase 3 で確認予定 |
+| エラーハンドリング | `@ControllerAdvice` | `rescue_from` / ステータスコード | try-catch + UI 表示 | ✅ | 404 / 422 を curl で確認 |
+| CORS | `@CrossOrigin` | `rack-cors` | — | ⬜ | Phase 3 で設定予定 |
+| 開発時 proxy | — | — | Vite `server.proxy` | ⬜ | Phase 3 で確認予定 |
 
 ## 6. テスト
 
 | トピック | Spring Boot | Rails（backend） | TypeScript（frontend） | 確認済み | メモ |
 |---|---|---|---|---|---|
-| モデルテスト | `@DataJpaTest` | RSpec model spec | — | ⬜ | |
-| API テスト | `@WebMvcTest`, MockMvc | RSpec request spec | — | ⬜ | |
+| モデルテスト | `@DataJpaTest` | RSpec model spec | — | ⬜ | 未着手 |
+| API テスト | `@WebMvcTest`, MockMvc | RSpec request spec | — | ⬜ | curl で手動検証済み、spec は未着手 |
 | フロントテスト | — | — | Vitest（任意） | — | スコープ外の可能性 |
 
 ## 7. 責務分離の違い（まとめ）
@@ -90,3 +90,4 @@ Rails / TypeScript / Java Spring Boot の概念対応を横断的にまとめる
 | 日付 | 更新内容 |
 |---|---|
 | 2026-07-02 | 初稿作成（全項目 ⬜） |
+| 2026-07-09 | Phase 1〜2 実装分を ✅ に更新 |
