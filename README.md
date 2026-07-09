@@ -7,7 +7,7 @@ Java / Spring Boot 経験者が、Rails / TypeScript 中心の自社プロダク
 - **本番利用目的のアプリではありません。** Rails / TypeScript 環境へのキャッチアップを目的とした技術検証です。
 - **このアプリ自体が Rails でなければならないわけではありません。** 検証のために意図的に Rails / TypeScript 構成を選んでいます。
 - **Java / Spring Boot 経験から、Rails / TypeScript 環境へ入る際の差分を確認する**ために作っています。
-- 実装は **Phase 1 以降で段階的に進めます。** 現時点（Phase 0）ではドキュメントとディレクトリ構成のみです。
+- 現時点では **Phase 2 まで完了**（Rails モデル層 + REST API）。Phase 3 以降でフロントエンドを追加予定です。
 
 ## 目的
 
@@ -20,7 +20,7 @@ Java / Spring Boot 経験者が、Rails / TypeScript 中心の自社プロダク
 - validation
 - association
 - enum / status 管理
-- TypeScript での API 連携
+- TypeScript での API 連携（Phase 3）
 
 ## 最小ドメイン
 
@@ -56,15 +56,16 @@ Java / Spring Boot 経験者が、Rails / TypeScript 中心の自社プロダク
 
 ```
 rails-typescript-readiness-spike/
-├── backend/          # Rails API（Phase 1 以降で作成）
-├── frontend/         # Vite + React + TypeScript（Phase 3 以降で作成）
-├── docs/             # 構成方針・差分メモ・学習ログ
+├── backend/              # Rails 8.1 API（models, controllers, routes）
+├── frontend/             # Vite + React + TypeScript（Phase 3 で作成予定）
+├── docs/                 # 構成方針・差分メモ・学習ログ
+├── docker-compose.yaml   # PostgreSQL 16（ホスト port 5433）
 └── README.md
 ```
 
 ## 構成方針
 
-- **backend/** … Rails API モード（ドメイン・永続化・バリデーション）
+- **backend/** … Rails API モード（ドメイン・永続化・バリデーション・JSON API）
 - **frontend/** … Vite + React + TypeScript（UI・API 連携）
 - **docs/** … アーキテクチャ方針と Java / Spring Boot との差分メモ
 
@@ -74,17 +75,72 @@ rails-typescript-readiness-spike/
 
 | Phase | 内容 | 状態 |
 |---|---|---|
-| 0 | リポジトリ土台・ドキュメント構成 | 進行中 |
-| 1 | Rails: model / migration / validation / association / enum | 未着手 |
-| 2 | Rails: routing / controller / JSON API | 未着手 |
+| 0 | リポジトリ土台・ドキュメント構成 | 完了 |
+| 1 | Rails: model / migration / validation / association / enum | 完了 |
+| 2 | Rails: routing / controller / JSON API | 完了 |
 | 3 | TypeScript: 一覧・詳細・作成フォーム | 未着手 |
 | 4 | tech-gap-matrix への Spring Boot 比較追記 | 未着手 |
 
 詳細は [docs/implementation-phases.md](docs/implementation-phases.md) を参照。
 
+## 前提環境
+
+| 項目 | バージョン / 設定 |
+|---|---|
+| Ruby | 3.3.6（rbenv 推奨） |
+| Rails | 8.1.x |
+| PostgreSQL | 16（Docker、ホスト port **5433**） |
+| Node.js | Phase 3 で使用予定 |
+
+> ホストの 5432 が他プロジェクトで使用中の場合があるため、compose は **5433** を使用しています。
+
 ## 起動方法
 
-Phase 1 以降の実装完了後に追記します。
+### 1. PostgreSQL を起動
+
+```bash
+cd ~/rails-typescript-readiness-spike
+docker compose up -d
+docker compose ps   # readiness-spike-postgres が healthy であること
+```
+
+### 2. Rails API を起動
+
+```bash
+source ~/.zshrc    # rbenv を有効化
+cd backend
+bundle install     # 初回のみ
+bin/rails db:prepare
+bin/rails server
+```
+
+`http://localhost:3000` で待ち受けます。
+
+### 3. 動作確認（curl）
+
+```bash
+# 一覧
+curl http://localhost:3000/api/v1/skill_gaps
+
+# 作成
+curl -X POST http://localhost:3000/api/v1/skill_gaps \
+  -H "Content-Type: application/json" \
+  -d '{"skill_gap":{"title":"Active Record","category":"rails"}}'
+
+# 詳細
+curl http://localhost:3000/api/v1/skill_gaps/1
+```
+
+## API エンドポイント
+
+| HTTP | URL | 用途 |
+|---|---|---|
+| GET | `/api/v1/skill_gaps` | SkillGap 一覧 |
+| GET | `/api/v1/skill_gaps/:id` | SkillGap 詳細（learning_tasks 同梱） |
+| POST | `/api/v1/skill_gaps` | SkillGap 作成 |
+| PATCH | `/api/v1/skill_gaps/:id` | SkillGap 更新 |
+| GET | `/api/v1/skill_gaps/:skill_gap_id/learning_tasks` | LearningTask 一覧 |
+| POST | `/api/v1/skill_gaps/:skill_gap_id/learning_tasks` | LearningTask 作成 |
 
 ## 関連ドキュメント
 
