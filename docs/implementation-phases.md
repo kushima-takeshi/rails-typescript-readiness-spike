@@ -64,19 +64,19 @@
 
 ---
 
-## Phase 3: TypeScript フロントエンド
+## Phase 3: TypeScript フロントエンド ✅
 
 **目的:** Vite + React + TypeScript から Rails API を呼び出す流れを確認する。
 
-| タスク | 確認ポイント |
+| タスク | 状態 |
 |---|---|
-| `npm create vite@latest frontend` でプロジェクト作成 | フロントの初期構成 |
-| API クライアント実装（`src/api/`） | fetch / axios の使い方 |
-| 型定義（`src/types/`） | API レスポンスの TypeScript 型 |
-| SkillGap 一覧・詳細・作成画面 | コンポーネント構成 |
-| LearningTask 一覧（SkillGap 詳細内） | ネストしたリソースの UI |
-| Vite proxy 設定 | 開発時の API 転送 |
-| enum 値の表示マッピング | backend enum → フロント表示 |
+| `npm create vite@latest frontend` でプロジェクト作成 | 完了 |
+| API クライアント実装（`src/api/`） | 完了 |
+| 型定義（`src/types/`） | 完了 |
+| SkillGap 一覧・詳細・作成画面 | 完了（`App.tsx` に集約） |
+| LearningTask 一覧（SkillGap 詳細内） | 完了 |
+| Vite proxy 設定 | 完了 |
+| enum 値の表示マッピング | 未着手 |
 
 **成果物:**
 

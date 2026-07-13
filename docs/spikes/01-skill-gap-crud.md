@@ -18,13 +18,13 @@ Phase 1〜3 を通じて、SkillGap の CRUD と LearningTask の関連表示を
 
 ### TypeScript（frontend）
 
-- [ ] Vite + React + TypeScript のプロジェクト構成
-- [ ] API クライアントの実装（`fetch` / axios）
-- [ ] API レスポンスの型定義
-- [ ] SkillGap 一覧画面の実装
-- [ ] SkillGap 詳細画面（LearningTask 一覧含む）の実装
-- [ ] SkillGap 作成フォームの実装
-- [ ] バリデーションエラーの画面表示
+- [x] Vite + React + TypeScript のプロジェクト構成
+- [x] API クライアントの実装（`fetch`）
+- [x] API レスポンスの型定義
+- [x] SkillGap 一覧画面の実装
+- [x] SkillGap 詳細画面（LearningTask 一覧含む）の実装
+- [x] SkillGap 作成フォームの実装
+- [x] バリデーションエラーの画面表示
 - [ ] enum 値の日本語表示マッピング
 
 ### Spring Boot との差分
@@ -33,7 +33,7 @@ Phase 1〜3 を通じて、SkillGap の CRUD と LearningTask の関連表示を
 - [x] Active Record と JPA + Repository の違い
 - [x] migration と Flyway の違い
 - [x] バリデーションの置き場所の違い
-- [ ] フロントエンドとの API 連携パターンの違い
+- [x] フロントエンドとの API 連携パターンの違い
 
 ---
 
@@ -55,6 +55,14 @@ Phase 1〜3 を通じて、SkillGap の CRUD と LearningTask の関連表示を
 - `ApplicationController` に 404（`rescue_from RecordNotFound`）と 422（`render_validation_errors`）を共通化
 - Controller 内の private メソッドで JSON を組み立て（serializer は未使用）
 
+**Phase 3（Frontend）**
+
+- `frontend/` に Vite + React + TypeScript（ESLint）を scaffold
+- `vite.config.ts` で `/api` → Rails `:3000` に proxy
+- `src/types/skillGap.ts` — API レスポンスの型
+- `src/api/skillGaps.ts` — `fetchSkillGaps` / `fetchSkillGap` / `createSkillGap`
+- `App.tsx` — 一覧 / 詳細 / 作成フォーム（React Router 未使用、state で画面切替）
+
 **エンドポイント一覧**
 
 | HTTP | URL | 用途 |
@@ -66,31 +74,34 @@ Phase 1〜3 を通じて、SkillGap の CRUD と LearningTask の関連表示を
 | GET | `/api/v1/skill_gaps/:skill_gap_id/learning_tasks` | 子タスク一覧 |
 | POST | `/api/v1/skill_gaps/:skill_gap_id/learning_tasks` | 子タスク作成 |
 
-**手動検証（curl）**
+**手動検証**
 
-- index 200 / create 201 / バリデーション失敗 422
-- show 200 / update 200 / learning_tasks index・create 200・201
-- 存在しない ID への show → 404 `{"error":"Not Found"}`
+- API（curl）: index 200 / create 201 / 422 / show / update / 404
+- フロント（ブラウザ）: 一覧表示 / 詳細 + LearningTask / 作成成功 / 422 でフィールド下にエラー
 
 ### 詰まった点
 
-- **rbenv の PATH**: `rbenv install` 後も `ruby -v` が 2.6.10 のまま。`source ~/.zshrc` で shims が有効化され解消
-- **Strong Parameters のラップ**: リクエスト JSON は `{"skill_gap": {...}}` のように単数形キーで包む必要がある
-- **N+1**: index で `learning_tasks_count` を出すため `SkillGap.includes(:learning_tasks)` を使用
+- **rbenv の PATH**: `source ~/.zshrc` で shims 有効化が必要だった
+- **Strong Parameters のラップ**: `{"skill_gap": {...}}` 形式が必要
+- **N+1**: index で `SkillGap.includes(:learning_tasks)` を使用
+- **フロントの複雑さ**: useState / useEffect / 非同期 fetch が一気に増えた（MPA との差）
+- **422 エラー表示**: ターミナルではなくブラウザ画面（フォーム下）に表示される
 
 ### Spring Boot との違いで印象に残ったこと
 
-- ルーティングが `routes.rb` 1 ファイルに集約され、Controller 名・アクション名が規約で決まる（`@GetMapping` を各クラスに書く形と対照的）
-- Service 層なしで Controller → Model 直結。ビジネスルールは Model の `validates` / `enum` / association に寄せる
-- 例外処理が `rescue_from` で ApplicationController に集約でき、`@ControllerAdvice` に近い
-- JSON は DTO ではなく Controller 内で Hash を組み立てるパターンが手軽（本番では serializer に切り出すことも多い）
+- ルーティングが `routes.rb` 1 ファイルに集約（`@GetMapping` 分散と対照的）
+- Service 層なしで Controller → Model 直結
+- **フロント**: MPA（サーバー HTML）から SPA（React + fetch + JSON）への分担の違いが大きい
+- Vite（:5173）と Rails（:3000）の **2 サーバー構成** が開発時の普通
+- バリデーションエラーは Rails が JSON で返し、React が `formErrors` state で画面表示
 
 ### 次に深掘りしたいこと
 
 - request spec（RSpec）での API テスト
-- serializer（blueprinter 等）への切り出し
-- `includes` / `preload` / `eager_load` の使い分け
-- Phase 3: TypeScript からの API 連携と CORS / Vite proxy
+- React Router で URL と画面を対応
+- enum の日本語表示マップ
+- コンポーネント分割（`pages/` / `components/`）
+- LearningTask 作成 UI
 
 ---
 
@@ -101,6 +112,7 @@ Phase 1〜3 を通じて、SkillGap の CRUD と LearningTask の関連表示を
 - [tech-gap-matrix.md](../tech-gap-matrix.md) — 横断対応表
 - [implementation-phases.md](../implementation-phases.md) — フェーズ計画
 - [01-routing-and-controllers.md](../java-spring-comparison/01-routing-and-controllers.md) — ルーティング比較
+- [07-typescript-api-client.md](../java-spring-comparison/07-typescript-api-client.md) — API 連携比較
 
 ## ステータス
 
@@ -108,5 +120,5 @@ Phase 1〜3 を通じて、SkillGap の CRUD と LearningTask の関連表示を
 |---|---|
 | Phase 1（Model） | 完了 |
 | Phase 2（API） | 完了（request spec は未着手） |
-| Phase 3（Frontend） | 未着手 |
-| 学習ログ記入 | Phase 1〜2 記入済み |
+| Phase 3（Frontend） | 完了（enum 日本語化・Router は未着手） |
+| 学習ログ記入 | Phase 1〜3 記入済み |

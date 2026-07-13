@@ -14,7 +14,7 @@
 | 04 | `04-validations.md` | バリデーション（validates vs Bean Validation） | Phase 1 |
 | 05 | `05-associations.md` | アソシエーション（has_many / belongs_to vs JPA 関連） | Phase 1 |
 | 06 | `06-enums-and-status.md` | enum / status 管理 | Phase 1 |
-| 07 | `07-typescript-api-client.md` | TypeScript からの API 連携 | Phase 3 |
+| 07 | `07-typescript-api-client.md` | TypeScript からの API 連携 | Phase 3 ✅ |
 
 ## 各ドキュメントの記載テンプレート（予定）
 

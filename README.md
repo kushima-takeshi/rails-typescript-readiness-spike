@@ -7,7 +7,7 @@ Java / Spring Boot 経験者が、Rails / TypeScript 中心の自社プロダク
 - **本番利用目的のアプリではありません。** Rails / TypeScript 環境へのキャッチアップを目的とした技術検証です。
 - **このアプリ自体が Rails でなければならないわけではありません。** 検証のために意図的に Rails / TypeScript 構成を選んでいます。
 - **Java / Spring Boot 経験から、Rails / TypeScript 環境へ入る際の差分を確認する**ために作っています。
-- 現時点では **Phase 2 まで完了**（Rails モデル層 + REST API）。Phase 3 以降でフロントエンドを追加予定です。
+- 現時点では **Phase 3 まで完了**（Rails API + React フロントの縦切り）。Phase 4 でドキュメントを仕上げます。
 
 ## 目的
 
@@ -20,7 +20,7 @@ Java / Spring Boot 経験者が、Rails / TypeScript 中心の自社プロダク
 - validation
 - association
 - enum / status 管理
-- TypeScript での API 連携（Phase 3）
+- TypeScript での API 連携
 
 ## 最小ドメイン
 
@@ -57,7 +57,7 @@ Java / Spring Boot 経験者が、Rails / TypeScript 中心の自社プロダク
 ```
 rails-typescript-readiness-spike/
 ├── backend/              # Rails 8.1 API（models, controllers, routes）
-├── frontend/             # Vite + React + TypeScript（Phase 3 で作成予定）
+├── frontend/             # Vite + React + TypeScript（一覧・詳細・作成画面）
 ├── docs/                 # 構成方針・差分メモ・学習ログ
 ├── docker-compose.yaml   # PostgreSQL 16（ホスト port 5433）
 └── README.md
@@ -78,7 +78,7 @@ rails-typescript-readiness-spike/
 | 0 | リポジトリ土台・ドキュメント構成 | 完了 |
 | 1 | Rails: model / migration / validation / association / enum | 完了 |
 | 2 | Rails: routing / controller / JSON API | 完了 |
-| 3 | TypeScript: 一覧・詳細・作成フォーム | 未着手 |
+| 3 | TypeScript: 一覧・詳細・作成フォーム | 完了 |
 | 4 | tech-gap-matrix への Spring Boot 比較追記 | 未着手 |
 
 詳細は [docs/implementation-phases.md](docs/implementation-phases.md) を参照。
@@ -90,7 +90,7 @@ rails-typescript-readiness-spike/
 | Ruby | 3.3.6（rbenv 推奨） |
 | Rails | 8.1.x |
 | PostgreSQL | 16（Docker、ホスト port **5433**） |
-| Node.js | Phase 3 で使用予定 |
+| Node.js | 18+ 推奨（v26 確認済み） |
 
 > ホストの 5432 が他プロジェクトで使用中の場合があるため、compose は **5433** を使用しています。
 
@@ -116,19 +116,24 @@ bin/rails server
 
 `http://localhost:3000` で待ち受けます。
 
-### 3. 動作確認（curl）
+### 3. フロントエンドを起動
+
+```bash
+cd ~/rails-typescript-readiness-spike/frontend
+npm install     # 初回のみ
+npm run dev
+```
+
+ブラウザで http://localhost:5173/ を開く（SkillGap 一覧・詳細・作成フォーム）。
+
+### 4. 動作確認（curl / 任意）
 
 ```bash
 # 一覧
 curl http://localhost:3000/api/v1/skill_gaps
 
-# 作成
-curl -X POST http://localhost:3000/api/v1/skill_gaps \
-  -H "Content-Type: application/json" \
-  -d '{"skill_gap":{"title":"Active Record","category":"rails"}}'
-
-# 詳細
-curl http://localhost:3000/api/v1/skill_gaps/1
+# proxy 経由（Vite 起動中）
+curl http://localhost:5173/api/v1/skill_gaps
 ```
 
 ## API エンドポイント

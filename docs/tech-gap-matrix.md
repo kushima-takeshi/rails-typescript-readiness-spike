@@ -60,11 +60,11 @@ Rails / TypeScript / Java Spring Boot の概念対応を横断的にまとめる
 
 | トピック | Spring Boot | Rails（backend） | TypeScript（frontend） | 確認済み | メモ |
 |---|---|---|---|---|---|
-| HTTP クライアント | —（フロント側） | — | `fetch` / axios | ⬜ | Phase 3 で確認予定 |
-| 型定義 | DTO クラス | serializer の出力 | `interface` / `type` | ⬜ | Phase 3 で確認予定 |
-| エラーハンドリング | `@ControllerAdvice` | `rescue_from` / ステータスコード | try-catch + UI 表示 | ✅ | 404 / 422 を curl で確認 |
-| CORS | `@CrossOrigin` | `rack-cors` | — | ⬜ | Phase 3 で設定予定 |
-| 開発時 proxy | — | — | Vite `server.proxy` | ⬜ | Phase 3 で確認予定 |
+| HTTP クライアント | —（フロント側） | — | `fetch` / axios | ✅ | `src/api/skillGaps.ts` |
+| 型定義 | DTO クラス | serializer の出力 | `interface` / `type` | ✅ | `src/types/skillGap.ts` |
+| エラーハンドリング | `@ControllerAdvice` | `rescue_from` / ステータスコード | `.catch` + UI 表示 | ✅ | 422 をフォーム下に表示 |
+| CORS | `@CrossOrigin` | `rack-cors` | — | ✅ | 開発時は Vite proxy で回避（rack-cors 未設定） |
+| 開発時 proxy | — | — | Vite `server.proxy` | ✅ | `/api` → localhost:3000 |
 
 ## 6. テスト
 
@@ -91,3 +91,4 @@ Rails / TypeScript / Java Spring Boot の概念対応を横断的にまとめる
 |---|---|
 | 2026-07-02 | 初稿作成（全項目 ⬜） |
 | 2026-07-09 | Phase 1〜2 実装分を ✅ に更新 |
+| 2026-07-13 | Phase 3 フロントエンド連携分を ✅ に更新 |
