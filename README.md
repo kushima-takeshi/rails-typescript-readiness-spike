@@ -7,7 +7,7 @@ Java / Spring Boot 経験者が、Rails / TypeScript 中心の自社プロダク
 - **本番利用目的のアプリではありません。** Rails / TypeScript 環境へのキャッチアップを目的とした技術検証です。
 - **このアプリ自体が Rails でなければならないわけではありません。** 検証のために意図的に Rails / TypeScript 構成を選んでいます。
 - **Java / Spring Boot 経験から、Rails / TypeScript 環境へ入る際の差分を確認する**ために作っています。
-- 現時点では **Phase 3 まで完了**（Rails API + React フロントの縦切り）。Phase 4 でドキュメントを仕上げます。
+- 現時点では **Phase 4 まで完了**（Rails API + React フロントの縦切り + ドキュメント）。
 
 ## 目的
 
@@ -79,7 +79,7 @@ rails-typescript-readiness-spike/
 | 1 | Rails: model / migration / validation / association / enum | 完了 |
 | 2 | Rails: routing / controller / JSON API | 完了 |
 | 3 | TypeScript: 一覧・詳細・作成フォーム | 完了 |
-| 4 | tech-gap-matrix への Spring Boot 比較追記 | 未着手 |
+| 4 | tech-gap-matrix / 比較メモ / 振り返り | 完了 |
 
 詳細は [docs/implementation-phases.md](docs/implementation-phases.md) を参照。
 

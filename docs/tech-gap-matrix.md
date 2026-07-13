@@ -27,7 +27,7 @@ Rails / TypeScript / Java Spring Boot の概念対応を横断的にまとめる
 
 | トピック | Spring Boot | Rails（backend） | TypeScript（frontend） | 確認済み | メモ |
 |---|---|---|---|---|---|
-| ルート定義 | `@GetMapping` 等 | `config/routes.rb` | React Router | ✅ | `namespace :api/v1` + `resources` |
+| ルート定義 | `@GetMapping` 等 | `config/routes.rb` | React Router（未使用） | ✅ | フロントは state で画面切替 |
 | コントローラ | `@RestController` | `Api::V1::*Controller` | — | ✅ | `ActionController::API` 継承 |
 | アクション分割 | メソッド単位 | アクション名（index, show, create...） | — | ✅ | REST 規約どおりのメソッド名 |
 | Service 層 | 一般的に分離 | 省略 or 薄い Model 委譲 | — | ✅ | 本 spike では Service なし |
@@ -54,7 +54,7 @@ Rails / TypeScript / Java Spring Boot の概念対応を横断的にまとめる
 | enum 定義 | Java `enum` クラス | `enum` マクロ | union type | ✅ | `not_started: 0` 形式 |
 | DB 格納 | ordinal / STRING | string / integer（設定次第） | — | ✅ | integer カラムに 0,1,2 |
 | バリデーション | enum 型で制約 | `enum` の inclusion | 型 + 表示マップ | ✅ | 不正値は AR が拒否 |
-| 表示変換 | サーバー側で変換 | serializer or helper | フロントのマップオブジェクト | ✅ | JSON では文字列（`"in_progress"`）で返る |
+| 表示変換 | サーバー側で変換 | serializer or helper | フロントのマップオブジェクト | ✅ | API は文字列。日本語マップは未実装 |
 
 ## 5. API 連携（フロントエンド）
 
@@ -70,8 +70,8 @@ Rails / TypeScript / Java Spring Boot の概念対応を横断的にまとめる
 
 | トピック | Spring Boot | Rails（backend） | TypeScript（frontend） | 確認済み | メモ |
 |---|---|---|---|---|---|
-| モデルテスト | `@DataJpaTest` | RSpec model spec | — | ⬜ | 未着手 |
-| API テスト | `@WebMvcTest`, MockMvc | RSpec request spec | — | ⬜ | curl で手動検証済み、spec は未着手 |
+| モデルテスト | `@DataJpaTest` | RSpec model spec | — | — | spike スコープ外 |
+| API テスト | `@WebMvcTest`, MockMvc | RSpec request spec | — | — | curl / 手動検証済み |
 | フロントテスト | — | — | Vitest（任意） | — | スコープ外の可能性 |
 
 ## 7. 責務分離の違い（まとめ）
@@ -92,3 +92,4 @@ Rails / TypeScript / Java Spring Boot の概念対応を横断的にまとめる
 | 2026-07-02 | 初稿作成（全項目 ⬜） |
 | 2026-07-09 | Phase 1〜2 実装分を ✅ に更新 |
 | 2026-07-13 | Phase 3 フロントエンド連携分を ✅ に更新 |
+| 2026-07-13 | Phase 4 完了。比較メモ 02〜06 追加、テストはスコープ外に整理 |
